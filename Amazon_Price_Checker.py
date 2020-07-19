@@ -6,6 +6,7 @@ head={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/201
 URL='add amazon product url here'
 check = True
 temp = input('Enter required price')
+temp = int(temp)
 def check_price():
     global temp
     page = requests.get(URL,headers=head)
@@ -18,7 +19,7 @@ def check_price():
     
     print('checking price')
     print()
-    if(value<temp):
+    if(value<=temp):
         send_mail('add sending mail here','add recieving mail here',URL)    
 
 
