@@ -3,7 +3,12 @@ from bs4 import BeautifulSoup
 import smtplib
 import time
 head={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/78.0'}
-URL='add amazon product url here'
+from configparser import ConfigParser
+
+parser = ConfigParser()
+parser.read('configuration.ini')
+
+URL=parser.get('settings','url')
 check = True
 temp = input('Enter required price')
 temp = int(temp)
@@ -20,7 +25,7 @@ def check_price():
     print('checking price')
     print()
     if(value<=temp):
-        send_mail('add sending mail here','add recieving mail here','add password here',URL)    
+        send_mail(parser.get('settings','sending_mail'),parser.get('settings','recieving_mail'),parser.get('settings','password'),parser.get('settings','url'))    
 
 
 
@@ -56,6 +61,5 @@ while(True):
     check_price()
     if(check==False):
         break
-    time.sleep(600)
-    # edit sleep time in seconds to change interval between checks
+    time.sleep(parser.getint('settings','interval'))
     
