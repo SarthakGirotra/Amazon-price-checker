@@ -25,6 +25,7 @@ def check_price():
     price = re.sub("\s",'',price)
     price = re.sub("₹",'',price)
     price = re.sub(",",'',price)
+    price = float(price)
     
     print('checking price')
     print()
