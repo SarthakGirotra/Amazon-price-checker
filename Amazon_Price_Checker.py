@@ -54,7 +54,8 @@ def send_mail(smail,rmail,link):
 
 while(True):
     check_price()
-    time.sleep(600)
-    # edit sleep time in seconds to change interval between checks
     if(check==False):
         break
+    time.sleep(600)
+    # edit sleep time in seconds to change interval between checks
+    
