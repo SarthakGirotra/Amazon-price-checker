@@ -20,19 +20,19 @@ def check_price():
     print('checking price')
     print()
     if(value<=temp):
-        send_mail('add sending mail here','add recieving mail here',URL)    
+        send_mail('add sending mail here','add recieving mail here','add password here',URL)    
 
 
 
 
-def send_mail(smail,rmail,link):
+def send_mail(smail,rmail,password,link):
     global check
     server = smtplib.SMTP('smtp.gmail.com',587)
     server.ehlo()
     server.starttls()
     server.ehlo()
 
-    server.login(smail,'app password here')
+    server.login(smail,password)
 
     subject = 'Price fell down'
     body='Product is a little cheaper '+ link
