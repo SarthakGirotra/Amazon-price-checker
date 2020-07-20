@@ -6,7 +6,7 @@ bs4
 
 regex
 
-#Instructions
+# Instructions
 
 This script requires a 2FA Gmail account
 
