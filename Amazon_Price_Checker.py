@@ -2,8 +2,10 @@ import requests
 from bs4 import BeautifulSoup
 import smtplib
 import time
-head={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/78.0'}
 from configparser import ConfigParser
+import re
+
+head={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/78.0'}
 
 parser = ConfigParser()
 parser.read('configuration.ini')
@@ -20,11 +22,13 @@ def check_price():
 
 
     price = soup.find(id='priceblock_ourprice').get_text()
-    value=int(price[2:5])
+    price = re.sub("\s",'',price)
+    price = re.sub("₹",'',price)
+    price = re.sub(",",'',price)
     
     print('checking price')
     print()
-    if(value<=temp):
+    if(price<=temp):
         send_mail(parser.get('settings','sending_mail'),parser.get('settings','recieving_mail'),parser.get('settings','password'),parser.get('settings','url'))    
 
 
@@ -52,9 +56,7 @@ def send_mail(smail,rmail,password,link):
     )
     print('email has been sent')
     check = False
-
     server.quit()
-
 
 
 while(True):
