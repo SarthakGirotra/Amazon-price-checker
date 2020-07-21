@@ -38,7 +38,11 @@ def cur_Price(no):
     page = requests.get(URL, headers=head)
     soup = BeautifulSoup(page.content, 'html.parser')
 
-    price = soup.find(id='priceblock_ourprice').get_text()
+    price = soup.find(id='priceblock_ourprice')
+    if(price == None):
+        price = soup.find(id='priceblock_dealprice').get_text()
+    else:
+        price = price.get_text()
     price = remove_sp(price)
     print('current price is ₹', price)
 
@@ -47,7 +51,7 @@ def remove_sp(str):
     str = re.sub("\s", '', str)
     str = re.sub("₹", '', str)
     str = re.sub(",", '', str)
-
+    str = re.sub("$", '', str)
     str = float(str)
     return str
 
