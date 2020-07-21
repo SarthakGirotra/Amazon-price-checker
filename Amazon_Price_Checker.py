@@ -4,6 +4,7 @@ import smtplib
 import time
 from configparser import ConfigParser
 import re
+from functools import reduce
 
 parser = ConfigParser()
 parser.read('configuration.ini')
@@ -12,10 +13,18 @@ head = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/78.0'}
 
 
-check1 = True
-check2 = True
-check3 = True
+check = []
 temp = []
+
+
+def bool_list(number):
+    global check
+    temp_ = True
+    for x in range(number):
+        check.append(temp_)
+
+
+bool_list(parser.getint('settings', 'products'))
 
 
 def cur_URL(number):
@@ -65,12 +74,12 @@ def check_price(link, product_no):
 
     if(price <= float(temp[product_no])):
         send_mail(parser.get('settings', 'sending_mail'), parser.get(
-            'settings', 'recieving_mail'), parser.get('settings', 'password'), parser.get('settings', link))
+            'settings', 'recieving_mail'), parser.get('settings', 'password'), parser.get('settings', link), product_no)
 
     return
 
 
-def send_mail(smail, rmail, password, link):
+def send_mail(smail, rmail, password, link, number):
     global check1
     global check2
     global check3
@@ -93,12 +102,7 @@ def send_mail(smail, rmail, password, link):
 
     )
     print('email has been sent')
-    if(link == 'url1'):
-        check1 = False
-    elif(link == 'url2'):
-        check2 = False
-    else:
-        check3 = False
+    check[number] = False
 
     server.quit()
     return
@@ -109,16 +113,16 @@ def prods():
     for y in range(x):
         temp_ = 'url' + str(y+1)
         index = y
-        check_price(temp_, index)
+        if(check[y] == True):
+            check_price(temp_, index)
 
 
 while(True):
 
     print('checking price')
     print()
-
     prods()
-    if(not(check1 and check2 and check3)):
+    if (not(reduce(lambda a, b: a+b, check))):
         break
 
     time.sleep(parser.getint('settings', 'interval'))
