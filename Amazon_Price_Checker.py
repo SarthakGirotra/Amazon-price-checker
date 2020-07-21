@@ -105,11 +105,11 @@ def send_mail(smail, rmail, password, link):
 
 
 def prods():
-    for x in range(parser.getint('settings', 'products')):
-        for y in range(x+1):
-            temp_ = 'url' + str(y+1)
-            index = y
-            check_price(temp_, index)
+    x = parser.getint('settings', 'products')
+    for y in range(x):
+        temp_ = 'url' + str(y+1)
+        index = y
+        check_price(temp_, index)
 
 
 while(True):
