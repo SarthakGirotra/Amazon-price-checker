@@ -104,21 +104,20 @@ def send_mail(smail, rmail, password, link):
     return
 
 
+def prods():
+    for x in range(parser.getint('settings', 'products')):
+        for y in range(x+1):
+            temp_ = 'url' + str(y+1)
+            index = y
+            check_price(temp_, index)
+
+
 while(True):
 
     print('checking price')
     print()
 
-    
-    if(parser.getint('settings', 'products') == 1):
-        check_price('url1', 0)
-    elif(parser.getint('settings', 'products') == 2):
-        check_price('url1', 0)
-        check_price('url2', 1)
-    elif(parser.getint('settings', 'products') == 3):
-        check_price('url1', 0)
-        check_price('url2', 1)
-        check_price('url3', 2)
+    prods()
     if(not(check1 and check2 and check3)):
         break
 
