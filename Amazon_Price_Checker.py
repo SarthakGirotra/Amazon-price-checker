@@ -28,12 +28,8 @@ bool_list(parser.getint('settings', 'products'))
 
 
 def cur_URL(number):
-    if(number == 0):
-        return parser.get('settings', 'url1')
-    elif(number == 1):
-        return parser.get('settings', 'url2')
-    elif(number == 2):
-        return parser.get('settings', 'url3')
+    temp_ = 'url' + str(number+1)
+    return(parser.get('settings', temp_))
 
 
 def cur_Price(no):
@@ -80,9 +76,6 @@ def check_price(link, product_no):
 
 
 def send_mail(smail, rmail, password, link, number):
-    global check1
-    global check2
-    global check3
     server = smtplib.SMTP('smtp.gmail.com', 587)
     server.ehlo()
     server.starttls()
