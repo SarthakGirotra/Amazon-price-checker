@@ -109,7 +109,7 @@ while(True):
     print('checking price')
     print()
 
-    # switch(parser.getint('settings','products'))
+    
     if(parser.getint('settings', 'products') == 1):
         check_price('url1', 0)
     elif(parser.getint('settings', 'products') == 2):
