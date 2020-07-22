@@ -33,19 +33,24 @@ def cur_URL(number):
 
 
 def cur_Price(no):
-
+    global check
     URL = cur_URL(no)
     page = requests.get(URL, headers=head)
     soup = BeautifulSoup(page.content, 'html.parser')
 
     price = soup.find(id='priceblock_ourprice')
     if(price == None):
-        print('Product is on sale')
-        price = soup.find(id='priceblock_dealprice').get_text()
+        price = soup.find(id='priceblock_dealprice')
+    if(price == None):
+        print('Product' + str(no+1) + ' is out of stock')
+        check[no] = False
+        send_mail(parser.get('settings', 'sending_mail'), parser.get(
+            'settings', 'recieving_mail'), parser.get('settings', 'password'), parser.get('settings', link), no)
     else:
         price = price.get_text()
-    price = remove_sp(price)
-    print('current price is ₹', price)
+    if(check[no] == True):
+        price = remove_sp(price)
+        print('current price is ₹', price)
 
 
 def remove_sp(str):
@@ -57,11 +62,13 @@ def remove_sp(str):
     return str
 
 
-for x in range(parser.getint('settings', 'products')):
-    cur_Price(x)
-    swap = input('enter required price for product' + str(x+1) + " ")
-    temp.append(swap)
-    print()
+def input_():
+    for x in range(parser.getint('settings', 'products')):
+        cur_Price(x)
+        if check[x] == True:
+            swap = input('enter required price for product' + str(x+1) + " ")
+            temp.append(swap)
+            print()
 
 
 def check_price(link, product_no):
@@ -76,7 +83,6 @@ def check_price(link, product_no):
     else:
         price = price.get_text()
     price = remove_sp(price)
-
     if(price <= float(temp[product_no])):
         send_mail(parser.get('settings', 'sending_mail'), parser.get(
             'settings', 'recieving_mail'), parser.get('settings', 'password'), parser.get('settings', link), product_no)
@@ -91,10 +97,15 @@ def send_mail(smail, rmail, password, link, number):
     server.ehlo()
 
     server.login(smail, password)
-
-    subject = 'Price fell down'
-    body = 'Product is a little cheaper ' + link
-
+    if(parser.get('settings', 'mode') == 'p' and check[number] == True):
+        subject = 'Price fell down'
+        body = 'Product is a little cheaper ' + link
+    elif(parser.get('settings', 'mode') == 's' and check[number] == True):
+        subject = 'Stock update'
+        body = 'Product is back in stock ' + link
+    else:
+        subject = 'Stock update'
+        body = 'Product is out of stock'
     msg = f"Subject :{subject}\n\n{body}"
 
     server.sendmail(
@@ -116,12 +127,32 @@ def prods():
         temp_ = 'url' + str(y+1)
         index = y
         if(check[y] == True):
-            check_price(temp_, index)
+            if(parser.get('settings', 'mode') == 'p'):
+                check_price(temp_, index)
+            elif(parser.get('settings', 'mode') == 's'):
+                check_stock(temp_, index)
 
+
+def check_stock(link, product_no):
+    URL = parser.get('settings', link)
+    page = requests.get(URL, headers=head)
+    soup = BeautifulSoup(page.content, 'html.parser')
+
+    stock = soup.find(class_='a-size-medium a-color-success')
+    if(not stock == None):
+        print('Product is in Stock')
+        send_mail(parser.get('settings', 'sending_mail'), parser.get(
+            'settings', 'recieving_mail'), parser.get('settings', 'password'), parser.get('settings', link), product_no)
+
+
+if(parser.get('settings', 'mode') == 'p'):
+    input_()
 
 while(True):
-
-    print('checking price')
+    if(parser.get('settings', 'mode') == 'p'):
+        print('checking price')
+    elif(parser.get('settings', 'mode') == 's'):
+        print('checking stock')
     print()
     prods()
     if (not(reduce(lambda a, b: a+b, check))):
