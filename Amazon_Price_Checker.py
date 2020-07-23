@@ -45,7 +45,7 @@ def cur_Price(no):
         print('Product' + str(no+1) + ' is out of stock')
         check[no] = False
         send_mail(parser.get('settings', 'sending_mail'), parser.get(
-            'settings', 'recieving_mail'), parser.get('settings', 'password'), parser.get('settings', link), no)
+            'settings', 'recieving_mail'), parser.get('settings', 'password'), URL, no)
     else:
         price = price.get_text()
     if(check[no] == True):
@@ -105,7 +105,7 @@ def send_mail(smail, rmail, password, link, number):
         body = 'Product is back in stock ' + link
     else:
         subject = 'Stock update'
-        body = 'Product is out of stock'
+        body = 'Product is out of stock ' + link
     msg = f"Subject :{subject}\n\n{body}"
 
     server.sendmail(
