@@ -50,7 +50,7 @@ def cur_Price(no):
         price = price.get_text()
     if(check[no] == True):
         price = remove_sp(price)
-        print('current price is ₹', price)
+        print('current price is ', price)
 
 
 def remove_sp(str):
